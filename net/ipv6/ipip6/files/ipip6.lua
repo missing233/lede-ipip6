@@ -29,6 +29,32 @@ encaplimit.rmempty = false
 defaultroute = section:taboption("advanced", Flag, "defaultroute", translate("Default gateway"), translate("If unchecked, no default route is configured"))
 defaultroute.default = defaultroute.enabled
 
+ip6assign = section:taboption("advanced", Value, "ip6assign", translate("IPv6 assignment length"),
+		translate("Assign a part of given length of every public IPv6-prefix to this interface"))
+ip6assign:value("", translate("disabled"))
+ip6assign:value("64")
+ip6assign.datatype = "max(128)"
+
+ip6hint = section:taboption("advanced", Value, "ip6hint", translate("IPv6 assignment hint"),
+		translate("Assign prefix parts using this hexadecimal subprefix ID for this interface."))
+for i=33,64 do ip6hint:depends("ip6assign", i) end
+
+
+ip6hint = section:taboption("advanced", Value, "ip6prefix",
+	translate("Custom delegated IPv6-prefix"))
+ip6hint.dataype = "ip6addr"
+
+ip6ifaceid = section:taboption("advanced", Value, "ip6ifaceid",
+	translate("IPv6 suffix"), translate("Optional. Allowed values: 'eui64', 'random', fixed value like '::1' or '::1:2'. When IPv6 prefix (like 'a:b:c:d::') is received from a delegating server, use the suffix (like '::1') to form the IPv6 address ('a:b:c:d::1') for the interface."))
+ip6ifaceid.dataype = "ip6hostid"
+ip6ifaceid.placeholder = "::1"
+ip6ifaceid.rmempty = true
+
+ip6weight = section:taboption("advanced", Value, "ip6weight",
+	translate("IPv6 preference"), translate("When delegating prefixes to multiple downstreams, interfaces with a higher preference value are considered first when allocating subnets."))
+ip6weight.dataype = "uinteger"
+ip6weight.placeholder = "0"
+
 metric = section:taboption("advanced", Value, "metric", translate("Use gateway metric"))
 metric.datatype = "uinteger"
 metric:depends("defaultroute", defaultroute.enabled)
